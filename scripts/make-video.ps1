@@ -9,11 +9,14 @@ $ffmpeg = python -c "import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe(
 if (-not $ffmpeg) { $ffmpeg = "ffmpeg" }  # fall back to PATH if the pip package isn't installed here
 
 $root = Split-Path $PSScriptRoot -Parent
-$image = Get-ChildItem (Join-Path $root "image") -Include *.jpg,*.jpeg,*.png -File | Select-Object -First 1
-$audio = Get-ChildItem (Join-Path $root "audio") -Include *.mp3,*.wav,*.m4a,*.aac -File | Select-Object -First 1
+$imageExts = ".jpg", ".jpeg", ".png"
+$audioExts = ".mp3", ".wav", ".m4a", ".aac"
 
-if (-not $image) { Write-Error "No image found in image\ — add a .jpg/.png first."; exit 1 }
-if (-not $audio)  { Write-Error "No audio found in audio\ — add your AI-generated track first."; exit 1 }
+$image = Get-ChildItem (Join-Path $root "image") -File | Where-Object { $imageExts -contains $_.Extension.ToLower() } | Select-Object -First 1
+$audio = Get-ChildItem (Join-Path $root "audio") -File | Where-Object { $audioExts -contains $_.Extension.ToLower() } | Select-Object -First 1
+
+if (-not $image) { Write-Error "No image found in image\ - add a .jpg/.png first."; exit 1 }
+if (-not $audio)  { Write-Error "No audio found in audio\ - add your AI-generated track first."; exit 1 }
 
 Write-Output "Image: $($image.Name)"
 Write-Output "Audio: $($audio.Name)"

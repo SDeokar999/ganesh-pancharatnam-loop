@@ -1,0 +1,9 @@
+.DS_Store
+Thumbs.db
+*.log
+
+# Raw source files stay local — only the assembled video/loop.mp4 gets committed
+image/*
+!image/.gitkeep
+audio/*
+!audio/.gitkeep
